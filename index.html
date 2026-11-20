@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="jungle" data-cursor-size="normal" data-motion="full">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0C3A33">
+<meta name="description" content="Игры Попугая — логопедический комплекс: 7 мини-игр, говорящий попугай Кеша и кабинет специалиста.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Попугай">
+<title>Игры Попугая — логопедический комплекс</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500;700&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script defer src="app.js"></script>
+</head>
+<body>
+
+<!-- Ambient background layers -->
+<div id="bg" aria-hidden="true">
+  <div id="sun"></div>
+  <div class="blob" id="blobA"></div>
+  <div class="blob" id="blobB"></div>
+  <div class="leafLayer" id="leavesBack" style="opacity:.55">
+    <svg viewBox="0 0 1200 220" preserveAspectRatio="none">
+      <path fill="#0A2C24" d="M0 220V150q30-60 60-20t40-50q20-40 50 10t60-30q30-50 60 20t50-40q25-35 55 15t65-25q30-45 60 10t55-35q25-30 55 20t65-30q30-45 60 15t50-40q25-30 55 20t65-25q30-40 60 15t50-35q25-25 55 25t65-20q30-40 60 20V220Z"/>
+    </svg>
+  </div>
+  <div class="leafLayer" id="leavesFront">
+    <svg viewBox="0 0 1200 200" preserveAspectRatio="none">
+      <path fill="#071E18" d="M0 200V120q25-70 55-15t45-60q20-45 55 15t60-40q30-55 60 20t55-50q25-40 55 20t65-30q30-50 60 15t55-45q25-35 55 25t65-35q30-50 60 20t55-45q25-35 55 25t65-30q30-45 60 20t55-45q25-30 55 30t65-25V200Z"/>
+      <g fill="#0B2E22">
+        <path d="M90 200q-8-90 24-130q6 60-6 130z"/>
+        <path d="M120 200q14-80 52-104q-10 58-34 104z"/>
+        <path d="M1040 200q-10-95 22-138q8 64-4 138z"/>
+        <path d="M1074 200q16-76 56-100q-12 56-38 100z"/>
+        <path d="M560 200q-6-70 20-102q6 48-4 102z"/>
+      </g>
+    </svg>
+  </div>
+</div>
+<div id="grain" aria-hidden="true"></div>
+<div id="birdLayer" aria-hidden="true"></div>
+
+<header id="hdr">
+  <button id="btnBack" hidden aria-label="Назад к играм">← Игры</button>
+  <button id="logoBtn" aria-label="На главную — попугай Кеша">
+    <svg viewBox="0 0 48 48" aria-hidden="true">
+      <g stroke="#33200F" stroke-width="2">
+        <path d="M20 6q-2-5 2-6q1 4 2 6z" fill="#FFC53D"/>
+        <path d="M25 6q1-6 5-5q-1 4-2 6z" fill="#FF7A1A"/>
+        <circle cx="24" cy="22" r="15" fill="#E8332F"/>
+        <ellipse cx="24" cy="27" rx="10" ry="8" fill="#FFF6E3"/>
+        <path d="M20 24q-6 2-5 9q1 5 6 6q-2-6 1-11z" fill="#E8D9B8"/>
+        <path d="M22 25q8 0 8 7q0 6-7 8q3-7-1-15z" fill="#E8D9B8"/>
+        <path d="M23 38q3 3 6 1q-2 3-6 2z" fill="#33200F"/>
+      </g>
+      <g id="miniPupils">
+        <circle cx="18" cy="20" r="3.4" fill="#FFFFFF"/>
+        <circle cx="18.6" cy="20.4" r="1.8" fill="#33200F"/>
+        <circle cx="30" cy="20" r="3.4" fill="#FFFFFF"/>
+        <circle cx="30.6" cy="20.4" r="1.8" fill="#33200F"/>
+      </g>
+    </svg>
+    <b>Игры <i>Попугая</i></b>
+  </button>
+  <span id="hdrTitle" hidden></span>
+  <nav class="hnav" id="hubNav" aria-label="Разделы главной">
+    <a href="#games" class="active" data-spy="games">Игры</a>
+    <a href="#shelf" data-spy="shelf">Награды</a>
+    <a href="#about" data-spy="about">О комплексе</a>
+  </nav>
+  <div id="hdrSpacer"></div>
+  <button class="chip" id="childChip" title="Сменить ребёнка">
+    <span id="childAva">🦜</span><span id="childName">—</span>
+  </button>
+  <button class="chip" id="sessChip" hidden title="Идёт занятие">
+    <i></i>⏱ <span id="sessTime">0:00</span>
+  </button>
+  <div class="chip" id="bank" title="Звёзды ребёнка">⭐ <span id="bankVal">0/21</span></div>
+  <button class="chip" id="micChip" title="Микрофон" aria-label="Микрофон"><i id="micDot"></i>🎤</button>
+  <button class="chip" id="btnSound" title="Звук" aria-label="Звук">🔊</button>
+  <button class="chip" id="btnPhone" title="Открыть на телефоне" aria-label="Открыть на телефоне">📲</button>
+  <button class="chip" id="btnCabinet">🗂 <span>Кабинет</span></button>
+</header>
+
+<main>
+
+<!-- ==================== HUB ==================== -->
+<section class="screen" id="screen-hub">
+  <div class="hero" id="hero">
+    <div class="mascotWrap" id="mascotWrap" title="Погладь Кешу!">
+      <div class="bubble" id="bubble">Привет! Я Кеша 🦜</div>
+      <span class="sleepZ" aria-hidden="true">💤</span>
+      <svg class="mascot" id="parrotHero" viewBox="0 0 260 244" role="img" aria-label="Попугай Кеша">
+        <defs>
+          <radialGradient id="pgBody" cx="40%" cy="30%" r="85%">
+            <stop offset="0%" stop-color="#FF6B5E"/>
+            <stop offset="55%" stop-color="#E8332F"/>
+            <stop offset="100%" stop-color="#B01E1B"/>
+          </radialGradient>
+          <linearGradient id="pgWing" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#37C4F0"/>
+            <stop offset="55%" stop-color="#0E7DC2"/>
+            <stop offset="100%" stop-color="#0A4E7C"/>
+          </linearGradient>
+        </defs>
+        <g stroke="#33200F" stroke-width="3" stroke-linecap="round" fill="none">
+          <path d="M96 208q-14 22-30 26" stroke="#0E7DC2" stroke-width="10"/>
+          <path d="M116 214q-6 22-16 30" stroke="#FFC53D" stroke-width="10"/>
+          <path d="M136 216q2 20-2 28" stroke="#E8332F" stroke-width="10"/>
+        </g>
+        <rect x="52" y="226" width="156" height="12" rx="6" fill="#8A4B2A" stroke="#33200F" stroke-width="3"/>
+        <ellipse cx="130" cy="158" rx="72" ry="66" fill="url(#pgBody)" stroke="#33200F" stroke-width="4"/>
+        <ellipse cx="132" cy="176" rx="40" ry="36" fill="#FFC53D" opacity=".9"/>
+        <ellipse cx="132" cy="182" rx="28" ry="26" fill="#FFE9A8"/>
+        <path d="M196 130q26 22 14 62q-20-6-30-30q-4-20 16-32z" fill="url(#pgWing)" stroke="#33200F" stroke-width="3.5"/>
+        <path d="M192 148q16 14 12 36" stroke="#FFC53D" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <g id="wingL">
+          <path d="M64 130q-26 22-14 62q20-6 30-30q4-20-16-32z" fill="url(#pgWing)" stroke="#33200F" stroke-width="3.5"/>
+          <path d="M68 148q-16 14-12 36" stroke="#FFC53D" stroke-width="6" fill="none" stroke-linecap="round"/>
+        </g>
+        <g stroke="#33200F" stroke-width="3" fill="none" stroke-linecap="round">
+          <path d="M108 218q-4 8 2 12"/>
+          <path d="M114 218q-2 8 4 12"/>
+          <path d="M146 218q-4 8 2 12"/>
+          <path d="M152 218q-2 8 4 12"/>
+        </g>
+        <g id="pHead">
+          <g id="crest" stroke="#33200F" stroke-width="3">
+            <path d="M112 52q-10-26 4-38q6 16 8 34z" fill="#FFC53D"/>
+            <path d="M128 46q-2-30 14-38q2 18-2 38z" fill="#FF7A1A"/>
+            <path d="M144 50q8-24 24-26q-4 16-12 30z" fill="#FFC53D"/>
+          </g>
+          <circle cx="130" cy="102" r="60" fill="url(#pgBody)" stroke="#33200F" stroke-width="4"/>
+          <ellipse cx="130" cy="116" rx="46" ry="38" fill="#FFF6E3" stroke="#33200F" stroke-width="3"/>
+          <g stroke="#E8332F" stroke-width="1.6" opacity=".55" fill="none">
+            <path d="M96 128q10 4 20 2"/>
+            <path d="M98 136q10 4 18 2"/>
+            <path d="M144 130q10 2 18-2"/>
+            <path d="M146 138q8 2 16-2"/>
+          </g>
+          <circle cx="104" cy="100" r="15" fill="#FFFDF5" stroke="#33200F" stroke-width="3"/>
+          <circle cx="156" cy="100" r="15" fill="#FFFDF5" stroke="#33200F" stroke-width="3"/>
+          <g id="pupils">
+            <circle cx="105" cy="102" r="7.5" fill="#33200F"/>
+            <circle cx="108" cy="99" r="2.6" fill="#FFFFFF"/>
+            <circle cx="155" cy="102" r="7.5" fill="#33200F"/>
+            <circle cx="158" cy="99" r="2.6" fill="#FFFFFF"/>
+          </g>
+          <ellipse class="lid" cx="104" cy="100" rx="16" ry="16" fill="#E8332F"/>
+          <ellipse class="lid" cx="156" cy="100" rx="16" ry="16" fill="#E8332F"/>
+          <path d="M112 116q-12 4-10 18q2 12 14 16q-4-12 2-24z" fill="#6B4E33" stroke="#33200F" stroke-width="3"/>
+          <path id="beak" d="M118 112q26-4 30 16q2 18-16 30q-8 4-12-2q8-14 2-30q-2-8-4-14z" fill="#E8D9B8" stroke="#33200F" stroke-width="3"/>
+          <path d="M132 152q-2 8-10 10q6 2 12-2z" fill="#33200F"/>
+          <circle cx="122" cy="120" r="2.4" fill="#33200F"/>
+        </g>
+      </svg>
+    </div>
+    <div class="heroTxt">
+      <h1><span class="w1">Дыши.</span> <span class="w2">Думай.</span> <span class="w3">Говори!</span></h1>
+      <p>Семь мини-игр для занятий с логопедом: воздушная струя, твёрдые и мягкие звуки, слоги, ритмы и счёт. Кеша объясняет каждую игру голосом, хвалит после каждого раунда, а кабинет специалиста ведёт расписание, цели и прогресс.</p>
+      <div class="heroChips">
+        <span>🎮 7 мини-игр</span>
+        <span>🦜 нейро-озвучка Кеши</span>
+        <span>🏆 16 достижений</span>
+        <span>🗓 кабинет специалиста</span>
+      </div>
+      <div class="heroBtns">
+        <a class="cta" href="#games">Выбрать игру 🪶</a>
+        <button class="cta alt" id="heroStart">▶ Начать занятие</button>
+        <button class="cta sky" id="heroPhone">📲 На телефон</button>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="sectTitle" id="games">
+    <svg viewBox="0 0 48 48" aria-hidden="true">
+      <g fill="#FFC53D">
+        <ellipse cx="24" cy="31" rx="12" ry="10"/>
+        <circle cx="10" cy="18" r="5.5"/>
+        <circle cx="19" cy="11" r="5.5"/>
+        <circle cx="29" cy="11" r="5.5"/>
+        <circle cx="38" cy="18" r="5.5"/>
+      </g>
+    </svg>
+    Во что поиграем? <small id="gamesFor">Играем за: —</small>
+  </h2>
+  <div class="grid" id="gameGrid"></div>
+
+  <h2 class="sectTitle" id="shelf">🏆 Полка наград <small id="shelfCount">0 из 16</small></h2>
+  <div class="shelfBox">
+    <div class="shelfInner">
+      <div class="shelfRow" id="shelfRow"></div>
+      <p class="shelfNote">Награды получает выбранный ребёнок. 👑 — любимая награда. Наведи курсор, чтобы увидеть условие.</p>
+    </div>
+  </div>
+
+  <div id="about">
+    <div class="aboutBox">
+      <h3>🪶 О комплексе</h3>
+      <div class="aboutChips">
+        <div><b>🎤</b>Микрофон ловит поток воздуха: голос отсекается полосовым фильтром и voiceRatio. Звук не покидает устройство.</div>
+        <div><b>🦜</b>Кеша говорит нейро-голосом из MP3, а без файлов — браузерным синтезом. Текст всегда дублируется в облачке.</div>
+        <div><b>🗂</b>Кабинет: расписание, журнал с фильтрами и печатью, график, цели, достижения, настройки и PIN.</div>
+        <div><b>🌿</b>Игра считает выдохи и напоминает отдохнуть — дыхательные упражнения только с паузами.</div>
+      </div>
+    </div>
+  </div>
+  <footer id="appFooter">«Игры Попугая»</footer>
+</section>
+
+<!-- ==================== SHIP ==================== -->
+<section class="screen gameScreen" id="screen-ship" hidden>
+  <div class="stage" id="shipStage">
+    <canvas id="shipCanvas"></canvas>
+    <div class="hudTop">
+      <div class="progTrack">
+        <div class="progFill" id="shipProg"></div>
+        <span class="progMark" id="shipMark">⛵</span>
+        <span class="progEnd">🏝️</span>
+      </div>
+      <div class="hudChip">⭐ <b id="shipStars">0/8</b></div>
+      <div class="hudChip">⏱ <b id="shipTime">0с</b></div>
+    </div>
+    <div class="stage-hint" id="shipHint">Вдохни носом и дуй 🌬️ Проплывай звёздные ворота, не прерывая выдох!</div>
+    <div class="pacer" id="shipPacer" hidden>
+      <div class="ring"><div class="core"></div></div>
+      <span>Вдох носом 👃</span>
+    </div>
+    <div class="gauge">
+      <label>Ветер <em id="shipWindPct">0%</em></label>
+      <div class="gbar">
+        <div class="gfill" id="shipGaugeFill"></div>
+        <div class="gateMark" id="shipGateMark"></div>
+      </div>
+    </div>
+    <div id="shipSmooth">✨ Ровный выдох!</div>
+  </div>
+  <div class="dock">
+    <div class="micGroup">
+      <button class="micToggle">
+        <span class="micLong">🎤 Включить микрофон</span>
+        <span class="micShort">🎤 ВЫКЛ</span>
+      </button>
+      <span class="voiceWarn" title="Это голос — нужен выдох">🎤</span>
+      <div class="micMeter"><div class="micMeterFill"></div></div>
+      <div class="sensWrap">
+        <input type="range" class="sensInput" min="0.5" max="3" step="0.1" aria-label="Чувствительность микрофона">
+        <small>чувств.</small>
+      </div>
+    </div>
+    <button class="windBtn">🌬️ ВЕТЕР — держи!<small class="keyHint">или держи пробел</small></button>
+    <div class="dockTools">
+      <button class="tool calBtn" title="Калибровка тишины" aria-label="Калибровка">🎚️</button>
+      <button class="tool pacerBtn" title="Ритм дыхания" aria-label="Ритм дыхания">🫁</button>
+      <button class="tool introBtn" data-game="ship" title="Кеша объяснит" aria-label="Инструкция Кеши">🦜</button>
+      <div class="selWrap">
+        <select class="sel diffSelect" data-game="ship" aria-label="Сложность">
+          <option value="easy">Легко</option>
+          <option value="norm">Норма</option>
+          <option value="hard">Сложно</option>
+        </select>
+        <small>режим</small>
+      </div>
+      <button class="tool pauseBtn" title="Пауза" aria-label="Пауза">⏸</button>
+      <button class="tool" id="shipRestart" title="Заново" aria-label="Заново">↻</button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== ODD ONE OUT ==================== -->
+<section class="screen" id="screen-odd" hidden>
+  <div class="centerCol">
+    <div class="roundBar">
+      <div class="dots" id="oddDots"></div>
+      <div class="hudChip">Раунд <b id="oddRoundLabel">1/8</b></div>
+      <div class="hudChip">⭐ <b id="oddStars">0</b></div>
+    </div>
+    <h2 class="qTitle">Что здесь лишнее? 🤔</h2>
+    <p class="qSub" id="oddSub">Нажми на картинку, которая не подходит к трём другим</p>
+    <div class="oddGrid" id="oddGrid"></div>
+    <div class="oddTools">
+      <button class="hintBtn" id="oddHintBtn">💡 Подсказка</button>
+      <div class="selWrap">
+        <select class="sel" id="oddSound" aria-label="Звук для отработки">
+          <option value="all">Все звуки</option>
+          <option value="Р">[Р]</option>
+          <option value="Л">[Л]</option>
+          <option value="С">[С]</option>
+          <option value="Ш">[Ш]</option>
+        </select>
+        <small>звук</small>
+      </div>
+      <div class="selWrap">
+        <select class="sel diffSelect" data-game="odd" aria-label="Сложность">
+          <option value="easy">Легко</option>
+          <option value="norm">Норма</option>
+          <option value="hard">Сложно</option>
+        </select>
+        <small>режим</small>
+      </div>
+      <button class="tool introBtn" data-game="odd" title="Кеша объяснит" aria-label="Инструкция Кеши">🦜</button>
+      <button class="tool pauseBtn" title="Пауза" aria-label="Пауза">⏸</button>
+      <button class="tool" id="oddRestart" title="Заново" aria-label="Заново">↻</button>
+    </div>
+    <p class="hintText" id="oddHintText"></p>
+    <div class="banner" id="oddBanner" hidden>
+      <span class="cat" id="oddCat"></span>
+      <p class="why" id="oddWhy"></p>
+      <div class="sayRow">
+        <p><b>Скажи целиком:</b> <span id="oddSay"></span></p>
+        <button class="sayBig" id="oddSayBtn" aria-label="Послушать фразу">🔊</button>
+      </div>
+      <button class="nextBtn" id="oddNext">Дальше →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== BALLOON ==================== -->
+<section class="screen gameScreen" id="screen-balloon" hidden>
+  <div class="stage" id="balStage">
+    <canvas id="balCanvas"></canvas>
+    <div class="hudTop">
+      <div class="hudChip" id="balRounds">🎈🎈🎈</div>
+      <div class="hudChip" id="balState">Дуй плавно…</div>
+      <div class="hudChip" style="margin-left:auto">💥 <b id="balPops">0</b></div>
+    </div>
+    <div class="stage-hint" id="balHint">Дуй ровно и мягко: до метки 🎯 и удержи. Переборщишь — лопнет!</div>
+    <div class="pacer" id="balPacer" hidden>
+      <div class="ring"><div class="core"></div></div>
+      <span>Вдох носом 👃</span>
+    </div>
+    <div class="gauge">
+      <label>Размер <em id="balPct">0%</em></label>
+      <div class="gbar">
+        <div class="gzones"><i id="balZone"></i></div>
+        <div class="gneedle" id="balNeedle"></div>
+      </div>
+    </div>
+  </div>
+  <div class="dock">
+    <div class="micGroup">
+      <button class="micToggle">
+        <span class="micLong">🎤 Включить микрофон</span>
+        <span class="micShort">🎤 ВЫКЛ</span>
+      </button>
+      <span class="voiceWarn" title="Это голос — нужен выдох">🎤</span>
+      <div class="micMeter"><div class="micMeterFill"></div></div>
+      <div class="sensWrap">
+        <input type="range" class="sensInput" min="0.5" max="3" step="0.1" aria-label="Чувствительность микрофона">
+        <small>чувств.</small>
+      </div>
+    </div>
+    <button class="windBtn">🌬️ ВЕТЕР — держи!<small class="keyHint">или держи пробел</small></button>
+    <div class="dockTools">
+      <button class="tool calBtn" title="Калибровка тишины" aria-label="Калибровка">🎚️</button>
+      <button class="tool pacerBtn" title="Ритм дыхания" aria-label="Ритм дыхания">🫁</button>
+      <button class="tool introBtn" data-game="balloon" title="Кеша объяснит" aria-label="Инструкция Кеши">🦜</button>
+      <div class="selWrap">
+        <select class="sel diffSelect" data-game="balloon" aria-label="Сложность">
+          <option value="easy">Легко</option>
+          <option value="norm">Норма</option>
+          <option value="hard">Сложно</option>
+        </select>
+        <small>режим</small>
+      </div>
+      <button class="tool pauseBtn" title="Пауза" aria-label="Пауза">⏸</button>
+      <button class="tool" id="balRestart" title="Заново" aria-label="Заново">↻</button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== RHYTHM ==================== -->
+<section class="screen" id="screen-rhythm" hidden>
+  <div class="centerCol">
+    <div class="roundBar">
+      <div class="dots" id="rDotsLevel"></div>
+      <div class="hudChip">Узор <b id="rLevel">1/6</b></div>
+      <div class="hudChip">🎯 с 1-го раза: <b id="rFirst">0</b></div>
+    </div>
+    <div class="parrotBig" id="rParrot" aria-hidden="true">🦜</div>
+    <div class="rPhase listen" id="rPhase" aria-live="polite">Слушай…</div>
+    <div class="rDots" id="rDots"></div>
+    <div class="rPads" id="rPads">
+      <button class="pad padLow" id="padLow">🥁 БУМ<small class="keyHint">1 / ←</small></button>
+      <button class="pad padHigh" id="padHigh">🔔 ТИК<small class="keyHint">2 / →</small></button>
+    </div>
+    <p class="rMsg" id="rMsg">Кеша покажет ритм, а ты повтори!</p>
+    <div class="oddTools">
+      <div class="selWrap">
+        <select class="sel diffSelect" data-game="rhythm" aria-label="Сложность">
+          <option value="easy">Легко</option>
+          <option value="norm">Норма</option>
+          <option value="hard">Сложно</option>
+        </select>
+        <small>режим</small>
+      </div>
+      <button class="tool introBtn" data-game="rhythm" title="Кеша объяснит" aria-label="Инструкция Кеши">🦜</button>
+      <button class="tool pauseBtn" title="Пауза" aria-label="Пауза">⏸</button>
+      <button class="tool" id="rRestart" title="Заново" aria-label="Заново">↻</button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== HARD / SOFT ==================== -->
+<section class="screen" id="screen-hard" hidden>
+  <div class="centerCol">
+    <div class="roundBar">
+      <div class="dots" id="hardDots"></div>
+      <div class="hudChip">Раунд <b id="hardRoundLabel">1/8</b></div>
+      <div class="hudChip">Ошибки: <b id="hardErr">0</b></div>
+    </div>
+    <h2 class="qTitle">Твёрдый или мягкий? 🪨🌿</h2>
+    <p class="qSub">Послушай Кешу: согласный звучит твёрдо или мягко?</p>
+    <div class="parrotBig" id="hardParrot" aria-hidden="true">🦜</div>
+    <div class="hmWord" id="hardWord"><span class="mystery">? ? ?</span></div>
+    <div class="hmNotice" id="hardNotice" hidden>
+      <span id="hardNoticeText"></span>
+      <button id="hardNoticeBtn">🔊 Включить звук</button>
+    </div>
+    <div class="hmBtns" id="hardBtns">
+      <button class="hmBtn hard" id="hmHard"><em>🪨</em>Твёрдо<small class="keyHint">клавиша 1</small></button>
+      <button class="hmBtn soft" id="hmSoft"><em>🌿</em>Мягко<small class="keyHint">клавиша 2</small></button>
+    </div>
+    <div class="oddTools">
+      <button class="hintBtn" id="hardRepeat">🔊 Повтори (без штрафа)</button>
+      <div class="selWrap">
+        <select class="sel diffSelect" data-game="hard" aria-label="Сложность">
+          <option value="easy">Слоги</option>
+          <option value="norm">Слова</option>
+          <option value="hard">Сложные</option>
+        </select>
+        <small>режим</small>
+      </div>
+      <button class="tool introBtn" data-game="hard" title="Кеша объяснит" aria-label="Инструкция Кеши">🦜</button>
+      <button class="tool pauseBtn" title="Пауза" aria-label="Пауза">⏸</button>
+      <button class="tool" id="hardRestart" title="Заново" aria-label="Заново">↻</button>
+    </div>
+    <div class="banner" id="hardBanner" hidden>
+      <span class="cat" id="hardCat"></span>
+      <p class="why" id="hardExplain"></p>
+      <button class="nextBtn" id="hardNext">Дальше →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SYLLABLE PATHS ==================== -->
+<section class="screen" id="screen-syll" hidden>
+  <div class="centerCol">
+    <div class="roundBar">
+      <div class="dots" id="syllDots"></div>
+      <div class="hudChip">Слово <b id="syllRoundLabel">1/6</b></div>
+      <div class="hudChip">🎯 точно: <b id="syllPerfect">0</b></div>
+    </div>
+    <h2 class="qTitle">Дорожки слогов 👏</h2>
+    <div class="syllWord">
+      <span class="em" id="syllWordEm">🐶</span>
+      <span id="syllWordText">со-ба-ка</span>
+    </div>
+    <div class="parrotBig" id="syllParrot" aria-hidden="true">🦜</div>
+    <div class="rPhase listen" id="syllPhase" aria-live="polite">Слушай…</div>
+    <div class="syllTrack" id="syllTrack"></div>
+    <button class="syllPad" id="syllPad">👏 ХЛОП!<small class="keyHint">или пробел в такт</small></button>
+    <p class="rMsg" id="syllMsg">Кеша хлопает слоги — повтори в том же ритме!</p>
+    <div class="syllMic">
+      🎤 Можно хлопать голосом:
+      <div class="micMeter"><div class="micMeterFill"></div></div>
+      <span id="syllMicState">микрофон выкл</span>
+    </div>
+    <div class="oddTools">
+      <div class="selWrap">
+        <select class="sel diffSelect" data-game="syll" aria-label="Сложность">
+          <option value="easy">2–3 слога</option>
+          <option value="norm">3–4 слога</option>
+          <option value="hard">4–5 + темп</option>
+        </select>
+        <small>режим</small>
+      </div>
+      <button class="tool introBtn" data-game="syll" title="Кеша объяснит" aria-label="Инструкция Кеши">🦜</button>
+      <button class="tool pauseBtn" title="Пауза" aria-label="Пауза">⏸</button>
+      <button class="tool" id="syllRestart" title="Заново" aria-label="Заново">↻</button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== MATH ==================== -->
+<section class="screen" id="screen-math" hidden>
+  <div class="centerCol">
+    <div class="roundBar">
+      <div class="dots" id="mathDots"></div>
+      <div class="hudChip">Раунд <b id="mathRoundLabel">1/8</b></div>
+      <div class="hudChip">Ошибки: <b id="mathErr">0</b></div>
+    </div>
+    <div class="mathHead">
+      <span class="ic" id="mathIcon">🔢</span>
+      <span class="tx" id="mathPrompt">Сколько яблок?</span>
+    </div>
+    <div class="parrotBig" id="mathParrot" aria-hidden="true">🦜</div>
+    <div class="mathStage" id="mathStage"></div>
+    <div class="mathOptions" id="mathOptions"></div>
+    <p class="mathFeed" id="mathFeedback"></p>
+    <div class="oddTools">
+      <button class="hintBtn" id="mathRepeat">🔊 Повтори вопрос</button>
+      <div class="selWrap">
+        <select class="sel" id="mathMode" aria-label="Режим игры">
+          <option value="mix">Всё подряд</option>
+          <option value="count">Счёт</option>
+          <option value="compare">Сравнение</option>
+          <option value="pattern">Закономерность</option>
+          <option value="shape">Форма</option>
+        </select>
+        <small>режим</small>
+      </div>
+      <div class="selWrap">
+        <select class="sel diffSelect" data-game="math" aria-label="Сложность">
+          <option value="easy">1–3</option>
+          <option value="norm">1–5</option>
+          <option value="hard">1–7</option>
+        </select>
+        <small>уровень</small>
+      </div>
+      <button class="tool introBtn" data-game="math" title="Кеша объяснит" aria-label="Инструкция Кеши">🦜</button>
+      <button class="tool pauseBtn" title="Пауза" aria-label="Пауза">⏸</button>
+      <button class="tool" id="mathRestart" title="Заново" aria-label="Заново">↻</button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SPECIALIST CABINET ==================== -->
+<section class="screen" id="screen-cabinet" hidden>
+  <div class="tabs">
+    <div class="tabsIn" role="navigation" aria-label="Вкладки кабинета">
+      <a href="#cab-session" data-spy="cab-session" class="active">⏱ Занятие</a>
+      <a href="#cab-schedule" data-spy="cab-schedule">🗓 Расписание</a>
+      <a href="#cab-kids" data-spy="cab-kids">👧 Дети</a>
+      <a href="#cab-journal" data-spy="cab-journal">📒 Журнал</a>
+      <a href="#cab-progress" data-spy="cab-progress">📈 Прогресс</a>
+      <a href="#cab-goals" data-spy="cab-goals">🎯 Цели</a>
+      <a href="#cab-ach" data-spy="cab-ach">🏆 Достижения</a>
+      <a href="#cab-settings" data-spy="cab-settings">⚙️ Настройки</a>
+      <a href="#cab-method" data-spy="cab-method">👩‍⚕️ Методика</a>
+    </div>
+  </div>
+
+  <div class="cabSec" id="cab-session">
+    <div class="cabHead">
+      <h2>⏱ Текущее занятие</h2>
+      <span class="sub">Результаты игр пишутся сюда автоматически</span>
+      <button class="btnP sky small" id="cabPhone" style="margin-left:auto">📲 На телефон</button>
+    </div>
+    <div class="panelCream green" id="sessionPanel"></div>
+    <div class="recentRow" id="recentSessions"></div>
+  </div>
+
+  <div class="cabSec" id="cab-schedule">
+    <div class="cabHead">
+      <h2>🗓 Расписание</h2>
+      <span class="sub" id="schedLabel"></span>
+      <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btnG small" id="schedPrev">← Неделя</button>
+        <button class="btnG small" id="schedToday">Сегодня</button>
+        <button class="btnG small" id="schedNext">Неделя →</button>
+      </div>
+    </div>
+    <div class="schedWrap">
+      <div class="schedGrid" id="schedGrid"></div>
+      <div class="schedList" id="schedList"></div>
+    </div>
+  </div>
+
+  <div class="cabSec" id="cab-kids">
+    <div class="cabHead">
+      <h2>👧 Дети</h2>
+      <span class="sub">Профиль: возраст, звуки, ДЗ, достижения, прогресс</span>
+    </div>
+    <div class="kidGrid" id="kidGrid"></div>
+  </div>
+
+  <div class="cabSec" id="cab-journal">
+    <div id="printHead">
+      <h1 id="printTitle">Журнал занятий</h1>
+      <p id="printMeta"></p>
+    </div>
+    <div class="cabHead">
+      <h2>📒 Журнал занятий</h2>
+      <span class="sub" id="jCount"></span>
+    </div>
+    <div class="jTools">
+      <input class="inp jSearch" id="jSearch" type="search" placeholder="🔍 Поиск по имени или заметке…" aria-label="Поиск по журналу">
+      <select class="inp" id="jFilter" aria-label="Фильтр по ребёнку"></select>
+      <select class="inp" id="jSort" aria-label="Сортировка">
+        <option value="date-desc">Сначала новые</option>
+        <option value="date-asc">Сначала старые</option>
+        <option value="stars-desc">Больше звёзд</option>
+        <option value="min-desc">Дольше занятие</option>
+      </select>
+      <input class="inp" id="jFrom" type="date" aria-label="Дата от">
+      <input class="inp" id="jTo" type="date" aria-label="Дата до">
+      <select class="inp" id="jStars" aria-label="Фильтр по звёздам">
+        <option value="0">Любые звёзды</option>
+        <option value="1">1★ и выше</option>
+        <option value="2">2★ и выше</option>
+        <option value="3">Только 3★</option>
+      </select>
+      <button class="btnG small" id="jCols">⚙️ Колонки</button>
+      <button class="btnG small" id="jPrint">🖨 Печать</button>
+      <button class="btnG small" id="jCsv">⬇ CSV</button>
+      <button class="btnG small" id="jJson">⬇ JSON</button>
+    </div>
+    <div class="chipRow" id="jGames" style="margin-bottom:12px"></div>
+    <div class="jList" id="jList"></div>
+  </div>
+
+  <div class="cabSec" id="cab-progress">
+    <div class="cabHead">
+      <h2>📈 Прогресс</h2>
+      <span class="sub" id="chartWho"></span>
+    </div>
+    <div class="jTools">
+      <select class="inp" id="progChild" aria-label="Ребёнок"></select>
+      <select class="inp" id="progMetric" aria-label="Метрика">
+        <option value="stars">Звёзды</option>
+        <option value="minutes">Минуты</option>
+        <option value="games">Число игр</option>
+      </select>
+      <select class="inp" id="progPeriod" aria-label="Период">
+        <option value="7">7 дней</option>
+        <option value="30" selected>30 дней</option>
+        <option value="all">Всё время</option>
+      </select>
+      <button class="btnG small" id="progSvg">⬇ SVG</button>
+      <button class="btnP small sky" id="progReport">📄 Отчёт</button>
+    </div>
+    <div id="chartHost"></div>
+    <div class="heat" id="heatHost"></div>
+  </div>
+
+  <div class="cabSec" id="cab-goals">
+    <div class="cabHead">
+      <h2>🎯 Цели на месяц</h2>
+      <span class="sub">Прогресс отмечается вручную</span>
+      <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap">
+        <select class="inp" id="goalChild" aria-label="Ребёнок"></select>
+        <button class="btnP small green" id="goalAdd">＋ Цель</button>
+      </div>
+    </div>
+    <div id="goalList"></div>
+  </div>
+
+  <div class="cabSec" id="cab-ach">
+    <div class="cabHead">
+      <h2>🏆 Достижения</h2>
+      <span class="sub" id="achStats"></span>
+      <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap">
+        <select class="inp" id="achChild" aria-label="Ребёнок"></select>
+        <button class="btnP small berry" id="achGift">🎁 Подарить</button>
+      </div>
+    </div>
+    <div class="achGrid" id="achGrid"></div>
+  </div>
+
+  <div class="cabSec" id="cab-settings">
+    <div class="cabHead">
+      <h2>⚙️ Настройки</h2>
+      <span class="sub">Применяются сразу и сохраняются в базе</span>
+    </div>
+    <div id="settingsHost"></div>
+  </div>
+
+  <div class="cabSec" id="cab-method">
+    <div class="cabHead">
+      <h2>👩‍⚕️ Методика и советы</h2>
+      <span class="sub">Цели упражнений к каждой игре</span>
+    </div>
+    <div class="panelCream gold">
+      <p class="methodLead">Игры дополняют занятие, а не заменяют его. Оптимально — 10–15 минут и 2–3 игры за сеанс. Микрофон ловит только поток воздуха: перечёркнутый 🎤 означает «это голос, а нужен выдох». Перед дыхательными играми нажмите 🎚️ «Калибровка» в тишине.</p>
+      <div class="methodGrid" id="methodGrid"></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<button id="kidFab" aria-label="Добавить ребёнка">＋</button>
+
+<!-- ==================== GAME TUTORIAL OVERLAY ==================== -->
+<div class="scrim" id="tutorial" hidden>
+  <div class="panel tutPanel" role="dialog" aria-modal="true" aria-labelledby="tutTitle">
+    <button class="xBtn" id="tutSkip" aria-label="Пропустить инструкцию">✕</button>
+    <div class="tutMascot" id="tutMascot">
+      <svg viewBox="0 0 260 244" role="img" aria-label="Кеша объясняет игру">
+        <g stroke="#33200F" stroke-width="3" stroke-linecap="round" fill="none">
+          <path d="M96 208q-14 22-30 26" stroke="#0E7DC2" stroke-width="10"/>
+          <path d="M116 214q-6 22-16 30" stroke="#FFC53D" stroke-width="10"/>
+          <path d="M136 216q2 20-2 28" stroke="#E8332F" stroke-width="10"/>
+        </g>
+        <rect x="52" y="226" width="156" height="12" rx="6" fill="#8A4B2A" stroke="#33200F" stroke-width="3"/>
+        <ellipse cx="130" cy="158" rx="72" ry="66" fill="#E8332F" stroke="#33200F" stroke-width="4"/>
+        <ellipse cx="132" cy="178" rx="36" ry="32" fill="#FFC53D"/>
+        <ellipse cx="132" cy="184" rx="24" ry="22" fill="#FFE9A8"/>
+        <path d="M196 130q26 22 14 62q-20-6-30-30q-4-20 16-32z" fill="#0E7DC2" stroke="#33200F" stroke-width="3.5"/>
+        <path class="tutWing" d="M64 130q-26 22-14 62q20-6 30-30q4-20-16-32z" fill="#0E7DC2" stroke="#33200F" stroke-width="3.5"/>
+        <g stroke="#33200F" stroke-width="3" fill="none" stroke-linecap="round">
+          <path d="M108 218q-4 8 2 12"/>
+          <path d="M114 218q-2 8 4 12"/>
+          <path d="M146 218q-4 8 2 12"/>
+          <path d="M152 218q-2 8 4 12"/>
+        </g>
+        <g stroke="#33200F" stroke-width="3">
+          <path d="M112 52q-10-26 4-38q6 16 8 34z" fill="#FFC53D"/>
+          <path d="M128 46q-2-30 14-38q2 18-2 38z" fill="#FF7A1A"/>
+          <path d="M144 50q8-24 24-26q-4 16-12 30z" fill="#FFC53D"/>
+        </g>
+        <circle cx="130" cy="102" r="60" fill="#E8332F" stroke="#33200F" stroke-width="4"/>
+        <ellipse cx="130" cy="116" rx="46" ry="38" fill="#FFF6E3" stroke="#33200F" stroke-width="3"/>
+        <g stroke="#E8332F" stroke-width="1.6" opacity=".5" fill="none">
+          <path d="M96 128q10 4 20 2"/>
+          <path d="M144 130q10 2 18-2"/>
+        </g>
+        <circle cx="104" cy="100" r="15" fill="#FFFDF5" stroke="#33200F" stroke-width="3"/>
+        <circle cx="156" cy="100" r="15" fill="#FFFDF5" stroke="#33200F" stroke-width="3"/>
+        <circle cx="105" cy="102" r="7.5" fill="#33200F"/>
+        <circle cx="108" cy="99" r="2.6" fill="#FFFFFF"/>
+        <circle cx="155" cy="102" r="7.5" fill="#33200F"/>
+        <circle cx="158" cy="99" r="2.6" fill="#FFFFFF"/>
+        <path d="M112 116q-12 4-10 18q2 12 14 16q-4-12 2-24z" fill="#6B4E33" stroke="#33200F" stroke-width="3"/>
+        <path class="tutBeak" d="M118 112q26-4 30 16q2 18-16 30q-8 4-12-2q8-14 2-30q-2-8-4-14z" fill="#E8D9B8" stroke="#33200F" stroke-width="3"/>
+        <path d="M132 152q-2 8-10 10q6 2 12-2z" fill="#33200F"/>
+        <circle cx="122" cy="120" r="2.4" fill="#33200F"/>
+      </svg>
+    </div>
+    <h2 id="tutTitle">Кеша объясняет</h2>
+    <div class="tutBubble"><p id="tutText"></p></div>
+    <div class="resBtns">
+      <button class="btnP green" id="tutPlay">▶ Играть</button>
+      <button class="btnG" id="tutRepeat">🔊 Повторить</button>
+    </div>
+    <p class="tutHint keyHint">Enter — играть, Esc — пропустить</p>
+  </div>
+</div>
+
+<!-- ==================== RESULT ==================== -->
+<div class="scrim" id="result" hidden>
+  <div class="panel paperScroll" role="dialog" aria-modal="true" aria-labelledby="resTitle">
+    <div id="resEmoji">🎉</div>
+    <h2 id="resTitle">Молодец!</h2>
+    <div id="resStars"><span>★</span><span>★</span><span>★</span></div>
+    <div id="resLines"></div>
+    <div class="resBtns">
+      <button class="btnP" id="resReplay">↻ Ещё раз</button>
+      <button class="btnP sky" id="resCab">📊 В кабинет</button>
+      <button class="btnG" id="resHub">🪶 К играм</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PAUSE ==================== -->
+<div class="scrim" id="pause" hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="pauseTitle">
+    <div style="font-size:52px">⏸</div>
+    <h2 id="pauseTitle">Пауза</h2>
+    <p>Отдохни, попей воды — и продолжим 🌿</p>
+    <div class="resBtns">
+      <button class="btnP green" id="pauseResume">▶ Продолжить</button>
+      <button class="btnG" id="pauseRestart">↻ Заново</button>
+      <button class="btnG" id="pauseExit">🪶 К играм</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PHONE / QR ==================== -->
+<div class="scrim" id="phone" hidden>
+  <div class="panel paperScroll" role="dialog" aria-modal="true" aria-labelledby="phoneTitle">
+    <button class="xBtn" id="phClose" aria-label="Закрыть">✕</button>
+    <h2 id="phoneTitle">📲 Открыть на телефоне</h2>
+    <p class="lead">Отправь ссылку, покажи QR-код или поставь иконку на домашний экран.</p>
+    <div id="phStatus"></div>
+    <div class="urlRow">
+      <input class="inp" id="phUrl" readonly aria-label="Ссылка на приложение">
+      <button class="btnP sky small" id="phCopy">📋 Копировать</button>
+      <button class="btnP green small" id="phShare">📤 Отправить</button>
+    </div>
+    <div class="qrWrap">
+      <canvas id="phQr" width="210" height="210" aria-label="QR-код ссылки"></canvas>
+      <div class="qrSide">
+        <h4>Наведи камеру 📷</h4>
+        <p id="phQrNote">QR строится прямо в браузере, без интернета и внешних сервисов.</p>
+      </div>
+    </div>
+    <div class="phBlock">
+      <h3>👩 Как пользоваться маме</h3>
+      <ol class="steps">
+        <li>Открыть ссылку или навести камеру на QR-код.</li>
+        <li>Нажать <b>«🎤 ВКЛ»</b> и разрешить микрофон.</li>
+        <li>Дуть в <b>нижний край телефона</b>. Перечёркнутый 🎤 — это голос, нужен выдох.</li>
+        <li>Меню браузера → <b>«На экран Домой»</b>.</li>
+      </ol>
+    </div>
+    <div class="phBlock" id="phPublish">
+      <h3>🚀 Как получить ссылку</h3>
+      <ol class="steps">
+        <li>Положи папку проекта (<span class="codeTag">index.html</span>, <span class="codeTag">styles.css</span>, <span class="codeTag">app.js</span>, <span class="codeTag">assets</span>) на компьютер.</li>
+        <li>Открой <b>app.netlify.com/drop</b>.</li>
+        <li>Перетащи папку — получишь ссылку с https, микрофон заработает.</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ONBOARDING ==================== -->
+<div class="scrim" id="onboard" hidden>
+  <div class="panel paperScroll" role="dialog" aria-modal="true" aria-label="Знакомство с Кешей">
+    <div class="obDots" id="obDots"><i class="on"></i><i></i><i></i></div>
+    <div id="obBody"></div>
+  </div>
+</div>
+
+<!-- ==================== CABINET PIN ==================== -->
+<div class="scrim" id="pin" hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="pinTitle">
+    <h2 id="pinTitle">🔒 Кабинет закрыт</h2>
+    <p class="lead">Введите PIN специалиста (4 цифры).</p>
+    <div class="field">
+      <input class="inp" id="pinInput" type="password" inputmode="numeric" maxlength="4" autocomplete="off" aria-label="PIN">
+    </div>
+    <p class="err" id="pinErr"></p>
+    <div class="dActions" style="justify-content:center">
+      <button class="btnP" id="pinGo">Открыть</button>
+      <button class="btnG" id="pinCancel">К играм</button>
+    </div>
+    <p class="lead" style="margin-top:12px">PIN снимается в настройках кабинета или полным сбросом данных.</p>
+  </div>
+</div>
+
+<!-- ==================== SIDE DRAWER ==================== -->
+<div id="drawer" hidden>
+  <div class="dScrim" id="dScrim"></div>
+  <div class="dPanel paperScroll" id="dPanel" role="dialog" aria-modal="true"></div>
+</div>
+
+<!-- ==================== KESHA SPEECH BUBBLE ==================== -->
+<div id="keshaSays" hidden aria-live="polite">
+  <svg class="ksHead" viewBox="0 0 48 48" aria-hidden="true">
+    <g stroke="#33200F" stroke-width="2">
+      <path d="M20 6q-2-5 2-6q1 4 2 6z" fill="#FFC53D"/>
+      <path d="M25 6q1-6 5-5q-1 4-2 6z" fill="#FF7A1A"/>
+      <circle cx="24" cy="22" r="15" fill="#E8332F"/>
+      <ellipse cx="24" cy="27" rx="10" ry="8" fill="#FFF6E3"/>
+      <path class="ksBeak" d="M22 25q8 0 8 7q0 6-7 8q3-7-1-15z" fill="#E8D9B8"/>
+    </g>
+    <circle cx="18" cy="20" r="3.4" fill="#FFFFFF"/>
+    <circle cx="18.6" cy="20.4" r="1.8" fill="#33200F"/>
+    <circle cx="30" cy="20" r="3.4" fill="#FFFFFF"/>
+    <circle cx="30.6" cy="20.4" r="1.8" fill="#33200F"/>
+  </svg>
+  <span class="ksText" id="ksText"></span>
+  <button class="ksBtn" id="ksBtn" hidden></button>
+</div>
+
+<div id="toasts" aria-live="polite"></div>
+<canvas id="fx"></canvas>
+
+</body>
+</html>
