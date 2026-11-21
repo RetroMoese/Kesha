@@ -1,0 +1,65 @@
+// .github/workflows/generate-audio.yml
+name: Generate Kesha voice
+
+on:
+  workflow_dispatch:
+    inputs:
+      voice:
+        description: 'Голос edge-tts'
+        type: choice
+        options:
+          - ru-RU-DmitryNeural
+          - ru-RU-SvetlanaNeural
+        default: ru-RU-DmitryNeural
+      rate:
+        description: 'Скорость речи'
+        type: string
+        default: '+0%'
+      force:
+        description: 'Перезаписать существующие MP3'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  tts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install edge-tts
+        run: python -m pip install --upgrade pip edge-tts
+
+      - name: Render MP3 into assets/audio
+        run: |
+          ARGS="--voice '${{ inputs.voice }}' --rate='${{ inputs.rate }}'"
+          if [ "${{ inputs.force }}" = "true" ]; then ARGS="$ARGS --force"; fi
+          eval node tools/generate-audio.mjs $ARGS
+
+      - name: Commit generated audio
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/audio
+          if git diff --cached --quiet; then
+            echo "Новых файлов нет"
+          else
+            git commit -m "chore(audio): generate Kesha neural voice"
+            git push
+          fi
+
+      - name: Upload audio artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kesha-audio
+          path: assets/audio
