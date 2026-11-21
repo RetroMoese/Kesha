@@ -1,5 +1,5 @@
 // tools/generate-audio.mjs
-#!/usr/bin/env node
+
 /* Reads assets/audio/phrases.json and renders each phrase to assets/audio/<key>.mp3 via edge-tts.
    Fallback engine: piper (offline ONNX) -> wav -> optional ffmpeg mp3.
    Usage: node tools/generate-audio.mjs [--force] [--voice ru-RU-SvetlanaNeural] [--rate=-10%] [--engine piper] */
